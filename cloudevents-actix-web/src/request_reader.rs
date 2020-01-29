@@ -46,7 +46,7 @@ macro_rules! unwrap_and_remove_header {
 pub async fn read_cloud_event(
     req: HttpRequest,
     payload: Bytes,
-) -> Result<HttpCloudEvent, actix_web::Error> {
+) -> Result<HttpEvent, actix_web::Error> {
     let mut headers: HeaderMap = req.headers().clone();
 
     if let Ok(ct) = unwrap_and_remove_header!(headers, "content-type") {
@@ -60,25 +60,25 @@ pub async fn read_cloud_event(
         if ct.contains(CE_JSON_CONTENT_TYPE) {
             return parse_structured(payload)
                 .await
-                .map(|ce| HttpCloudEvent::Structured(Some(ce)));
+                .map(|ce| HttpEvent::Structured(Some(ce)));
         } else if ct.contains(CE_BATCH_JSON_CONTENT_TYPE) {
             return parse_batch(payload)
                 .await
-                .map(HttpCloudEvent::Batch);
+                .map(HttpEvent::Batch);
         } else {
             return parse_binary(headers, Some((ct, payload)))
                 .await
-                .map(|ce| HttpCloudEvent::Binary(Some(ce)));
+                .map(|ce| HttpEvent::Binary(Some(ce)));
         }
     }
 
     if headers.contains_key(CE_ID_HEADER) {
         return parse_binary(headers, None)
             .await
-            .map(|ce| HttpCloudEvent::Binary(Some(ce)));
+            .map(|ce| HttpEvent::Binary(Some(ce)));
     }
 
-    return Ok(HttpCloudEvent::Binary(None));
+    return Ok(HttpEvent::Binary(None));
 }
 
 async fn parse_structured(payload: Bytes) -> Result<Event, actix_web::Error> {

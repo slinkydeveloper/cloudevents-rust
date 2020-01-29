@@ -3,11 +3,11 @@ use cloudevents::http::*;
 use cloudevents::Event;
 use serde::Serialize;
 
-pub fn write_cloud_event(ce: HttpCloudEvent) -> Result<HttpResponse, actix_web::Error> {
+pub fn write_cloud_event(ce: HttpEvent) -> Result<HttpResponse, actix_web::Error> {
     return match ce {
-        HttpCloudEvent::Binary(Some(e)) => write_binary(e),
-        HttpCloudEvent::Structured(Some(e)) => serialize_and_write(e, CE_JSON_CONTENT_TYPE),
-        HttpCloudEvent::Batch(vec) => serialize_and_write(vec, CE_BATCH_JSON_CONTENT_TYPE),
+        HttpEvent::Binary(Some(e)) => write_binary(e),
+        HttpEvent::Structured(Some(e)) => serialize_and_write(e, CE_JSON_CONTENT_TYPE),
+        HttpEvent::Batch(vec) => serialize_and_write(vec, CE_BATCH_JSON_CONTENT_TYPE),
         _ => return Ok(HttpResponse::Accepted().finish())
     }
 }

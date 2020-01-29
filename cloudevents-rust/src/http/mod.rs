@@ -1,4 +1,10 @@
-use crate::Event;
+mod event;
+mod reader;
+mod writer;
+
+pub use event::HttpEvent;
+pub use reader::{ReaderError, Reader as EventReader};
+pub use writer::{WriterError, Writer as WriterReader};
 
 pub const CE_ID_HEADER: &str = "ce-id";
 pub const CE_TYPE_HEADER: &str = "ce-type";
@@ -10,9 +16,3 @@ pub const CE_TIME_HEADER: &str = "ce-time";
 
 pub const CE_JSON_CONTENT_TYPE: &str = "application/cloudevents+json";
 pub const CE_BATCH_JSON_CONTENT_TYPE: &str = "application/cloudevents-batch+json";
-
-pub enum HttpCloudEvent {
-    Binary(Option<Event>),
-    Structured(Option<Event>),
-    Batch(Vec<Event>)
-}
