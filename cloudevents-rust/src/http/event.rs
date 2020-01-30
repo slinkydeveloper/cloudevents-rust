@@ -1,7 +1,7 @@
 use crate::Event;
 
 pub enum HttpEvent {
-    Binary(Option<Event>),
-    Structured(Option<Event>),
+    Binary(Event),
+    Structured(Event),
     Batch(Vec<Event>)
 }

@@ -33,6 +33,12 @@ impl Error for ReaderError {
     }
 }
 
+impl std::convert::From<serde_json::Error> for ReaderError {
+    fn from(e: serde_json::Error) -> Self {
+        ReaderError::Other(Box::new(e))
+    }
+}
+
 pub trait Reader<R> {
-    fn read_cloud_event(req: R) -> Result<HttpEvent, ReaderError>;
+    fn read_cloud_event(req: R) -> Result<Option<HttpEvent>, ReaderError>;
 }

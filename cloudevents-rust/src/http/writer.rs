@@ -28,6 +28,12 @@ impl Error for WriterError {
     }
 }
 
+impl std::convert::From<serde_json::Error> for WriterError {
+    fn from(e: serde_json::Error) -> Self {
+        WriterError::Other(Box::new(e))
+    }
+}
+
 pub trait Writer<R> {
     fn write_cloud_event(res: HttpEvent) -> Result<R, WriterError>;
 }
